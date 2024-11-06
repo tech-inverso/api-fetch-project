@@ -1,4 +1,7 @@
+const express = require('express');
 const axios = require("axios");
+
+const cronRouter = express.Router();
 
 // Define the API endpoint
 const url =
@@ -23,4 +26,7 @@ const getCron = async (req, res) => {
   }
 };
 
-module.exports = {getCron}
+
+cronRouter.get("/", getCron)
+
+module.exports = {cronRouter}
