@@ -1,27 +1,30 @@
-// Importing required libraries
-const cron = require("node-cron");
 const express = require("express");
-const axios = require("axios");
+const cors = require("cors")
+const { getCron } = require("./api/controllers/cron.controller");
 
-// Define the API endpoint
-const url = "https://inverso-backend.onrender.com/api/items?populate=*&pagination[pageSize]=5";
+const app = express();
 
-// Function to fetch data from the API
-async function fetchData() {
-  try {
-    const response = await axios.get(url);
-    console.log("Data fetched at", new Date());
-  } catch (error) {
-    console.error("Error fetching data:", error);
-  }
-}
+// // Creating a cron job which runs on every 15 minutes
+// cron.schedule("*/15 * * * *", function () {
+//   console.log("Running a task every 15 minutes");
+//   fetchData();
+// });
 
-app = express(); // Initializing app
 
-// Creating a cron job which runs on every 15 minutes
-cron.schedule("*/15 * * * *", function () {
-  console.log("Running a task every 15 minutes");
-  fetchData();
-});
+app.use(express.json())
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,PATCH,POST,DELETE');
+    res.header('Access-Control-Allow-Credentials', true);
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    next();
+  });
 
-app.listen(3000);
+app.use(cors({
+    origin: "*",
+    credentials: true
+}))
+
+app.use("/cron", getCron);
+
+
+app.listen(3000,() => console.log(`listening http://localhost:3000`))
