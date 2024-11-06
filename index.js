@@ -18,7 +18,7 @@ async function fetchData() {
 
 app = express(); // Initializing app
 
-// Creating a cron job which runs on every 10 second
+// Creating a cron job which runs on every 15 minutes
 cron.schedule("*/15 * * * *", function () {
   console.log("Running a task every 15 minutes");
   fetchData();
