@@ -20,7 +20,7 @@ async function fetchData() {
 const getCron = async (req, res) => {
   try {
     fetchData();
-    return res.status(200);
+    return res.status(200).json("OK!");
   } catch (error) {
     return res.status(500).json(error);
   }
