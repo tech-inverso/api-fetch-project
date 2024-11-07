@@ -26,7 +26,4 @@ const getCron = async (req, res) => {
   }
 };
 
-
-cronRouter.get("/", getCron)
-
-module.exports = {cronRouter}
+module.exports = {getCron}
