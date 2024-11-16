@@ -1,0 +1,58 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: api-fetch-job
+  namespace: common
+spec:
+  schedule: "*/15 * * * *"
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 360000
+      template:
+        spec:
+          hostNetwork: true
+          containers:
+            - name: app
+              image: ${IMAGE_TAG}
+              imagePullPolicy: IfNotPresent
+              command: ["/bin/sh", "-c"]
+              env:
+                - name: API_URL
+                  value: ${API_URL}
+                - name: WS_KEY
+                  value: ${WS_KEY}
+                - name: DB_URL
+                  value: ${DB_URL}
+                - name: NPM_TOKEN
+                  value: ${NPM_TOKEN}
+              args:
+                - echo --- starting ---;
+                  echo --- running apk add --update bind-tools ---;
+                  apk add --update bind-tools;
+
+                  echo --- running dig www.npmjs.com @1.1.1.1 ---;
+                  dig www.npmjs.com @1.1.1.1;
+                  echo "104.16.109.30 registry.npmjs.org" >> /etc/hosts;
+                  echo "151.101.72.162 registry.npmjs.org" >> /etc/hosts;
+                  echo --- registry.npmjs.org setted in hosts ---;
+
+                  echo --- running dig npm.pkg.github.com @1.1.1.1 ---;
+                  dig npm.pkg.github.com @1.1.1.1;
+                  echo "@we-reprice:registry=https://npm.pkg.github.com" >> ./.npmrc;
+                  echo "//npm.pkg.github.com/:_authToken=${NPM_TOKEN}" >> ./.npmrc;
+                  echo --- npm.pkg.github.com setted in hosts ---;
+
+                  echo --- running npm install ---;
+                  npm install;
+                  ls -la;
+
+                  echo --- running npm run start ---;
+                  npm run start;
+
+                  echo --- done ---;
+          restartPolicy: Never
+          imagePullSecrets:
+            - name: dockerconfigjson-github-com
+          dnsPolicy: Default
+          nodeSelector:
+            kubernetes.io/arch: arm64
