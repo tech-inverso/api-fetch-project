@@ -1,5 +1,17 @@
-const { getCron } = require("../controllers/cron.controller")
+const { fetchData } = require("../controllers/cron.controller");
 
-cronRouter.get("/", getCron)
+const run = async () => {
+  console.log("---------------------");
+  console.log("Running api-fetch-project task");
 
-module.exports = {cronRouter}
+  startTime = performance.now();
+
+  await fetchData();
+
+  endTime = performance.now();
+
+  // Exit w/out errors
+  process.exit(0);
+};
+
+module.exports = { run };
