@@ -17,12 +17,6 @@ spec:
               imagePullPolicy: IfNotPresent
               command: ["/bin/sh", "-c"]
               env:
-                - name: API_URL
-                  value: ${API_URL}
-                - name: WS_KEY
-                  value: ${WS_KEY}
-                - name: DB_URL
-                  value: ${DB_URL}
                 - name: NPM_TOKEN
                   value: ${NPM_TOKEN}
               args:
